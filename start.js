@@ -1,12 +1,16 @@
-var Accessory = require('./hap/Accessory');
+var Accessory = require('./hap/Accessory').Accessory;
 var Bridge = require('./hap/Bridge').Bridge;
-var Service = require('./hap/Service');
-var Characteristic = require('./hap/Characteristic');
+var Service = require('./hap/Service').Service;
+var Characteristic = require('./hap/Characteristic').Characteristic;
 var uuid = require('./hap/util/uuid');
+var storage = require('node-persist');
 var sws = require('./switch').switches;
 
+// Initialize our storage system
+storage.initSync();
+
 var createSwitchAccessory = function (sw) {
-    var a = Accessory(sw.name, uuid.generate('hehe' + sw.name));
+    var a = new Accessory(sw.name, uuid.generate('hehe' + sw.name));
 
     // set some basic properties (these values are arbitrary and setting them is optional)
     a.getService(Service.AccessoryInformation)
@@ -33,6 +37,7 @@ var createSwitchAccessory = function (sw) {
         .on('get', function (callback) {
             callback(null, sw.getPower());
         });
+    return a;
 };
 
 // Start by creating our Bridge which will host all loaded Accessories
@@ -51,7 +56,7 @@ bridge.publish({
     category: Accessory.Categories.BRIDGE
 });
 
-
+/*
 // Set up GPIO triggers
 var gpio = require('rpi-gpio');
 
@@ -68,3 +73,4 @@ gpio.on('change', function (channel, value) {
 for (i in sws) {
     gpio.setup(sws[i].gpio, gpio.DIR_IN, gpio.EDGE_BOTH);
 }
+*/
