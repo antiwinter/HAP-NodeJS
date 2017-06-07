@@ -1,7 +1,7 @@
 {
-  "name": "hap-nodejs",
-  "version": "0.4.25",
-  "description": "HAP-NodeJS is a Node.js implementation of HomeKit Accessory Server.",
+  "name": "homehub-nodejs",
+  "version": "0.0.1",
+  "description": "This is for my own use",
   "main": "index.js",
   "engines": {
     "node": ">=4.3.2"
@@ -21,16 +21,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node BridgedCore.js"
+    "start": "node Start.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/KhaosT/HAP-NodeJS.git"
+    "url": "https://github.com/antiwinter/homehub.git"
   },
-  "author": "Khaos Tian <khaos.tian@gmail.com> (http://tz.is/)",
+  "author": "antiwinter",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/KhaosT/HAP-NodeJS/issues"
-  },
-  "homepage": "https://github.com/KhaosT/HAP-NodeJS"
+  "homepage": "https://github.com/antiwinter/homehub"
 }
