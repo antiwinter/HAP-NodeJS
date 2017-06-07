@@ -1,7 +1,9 @@
-var Accessory = require('hap/Accessory');;
-var Service = require('hap/Service');
-var Characteristic = require('hap/Characteristic');
-var uuid = require('hap/util/uuid');
+var Accessory = require('./hap/Accessory');
+var Bridge = require('./hap/Bridge').Bridge;
+var Service = require('./hap/Service');
+var Characteristic = require('./hap/Characteristic');
+var uuid = require('./hap/util/uuid');
+var sws = require('./switch').switches;
 
 var createSwitchAccessory = function (sw) {
     var a = Accessory(sw.name, uuid.generate('hehe' + sw.name));
@@ -33,35 +35,8 @@ var createSwitchAccessory = function (sw) {
         });
 };
 
-var Switch = function (pin, relay_id, name) {
-    this.pin = pin;
-    this.relay_id = ri;
-    this.name = name;
-    this.setPower = function (en) {
-        console.log("Turning the '%s' %s", this.name, en ? "on" : "off");
-        this.status = en;
-    };
-
-    this.getPower = function () { //get power of accessory
-        console.log("'%s' is %s.", this.name, this.status ? "on" : "off");
-        return this.status;
-    };
-}
-
 // Start by creating our Bridge which will host all loaded Accessories
 var bridge = new Bridge('Switch Center', uuid.generate("Switch Center"));
-
-// switches property
-var sws = [
-    Switch(1, 1, "Cinema Wall"),
-    Switch(1, 1, "Cinema Ceiling"),
-    Switch(1, 1, "Hall"),
-    Switch(1, 1, "Hallway"),
-    Switch(1, 1, "Terrace"),
-    Switch(1, 1, "Dining Room"),
-    Switch(1, 1, "Small Bedroom"),
-    Switch(1, 1, "Bedroom")
-];
 
 for (i in sws) {
     var a = createSwitchAccessory(sws[i]);
@@ -75,3 +50,21 @@ bridge.publish({
     pincode: "031-45-154",
     category: Accessory.Categories.BRIDGE
 });
+
+
+// Set up GPIO triggers
+var gpio = require('rpi-gpio');
+
+gpio.on('change', function (channel, value) {
+    console.log('Channel ' + channel + ' value is now ' + value);
+    for (i in sws) {
+        if (sws[i].gpio == channel) {
+            sws[i].setPower(value);
+            break;
+        }
+    }
+});
+
+for (i in sws) {
+    gpio.setup(sws[i].gpio, gpio.DIR_IN, gpio.EDGE_BOTH);
+}
