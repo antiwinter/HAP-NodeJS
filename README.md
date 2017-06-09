@@ -13,3 +13,33 @@ https://github.com/nodesource/distributions
 
 although I didn't successed on debian (carbon x1), finally modified /usr/include/nodejs/debs/v8.h manually.
 https://github.com/nodejs/node-v0.x-archive/blob/v0.10.29/deps/v8/include/v8.h#L1075-L1084
+
+
+### raspberry install
+```
+sudo apt-get update
+sudo apt-get install samba vim git
+sudo passwd pi
+```
+
+add samba configuration
+```
+cat >> /etc/samba/smb.conf
+[pi]
+   comment = pifs
+   path = /home/pi
+   valid users = @pi
+   guest ok = no
+   available = yes
+   browseable = yes
+   writable = yes
+^Z
+sudo /etc/init.d/smbd restart
+```
+
+install node js from node source
+```
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install nodejs
+```
+

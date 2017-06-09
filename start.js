@@ -55,22 +55,3 @@ bridge.publish({
     pincode: "031-45-154",
     category: Accessory.Categories.BRIDGE
 });
-
-/*
-// Set up GPIO triggers
-var gpio = require('rpi-gpio');
-
-gpio.on('change', function (channel, value) {
-    console.log('Channel ' + channel + ' value is now ' + value);
-    for (i in sws) {
-        if (sws[i].gpio == channel) {
-            sws[i].setPower(value);
-            break;
-        }
-    }
-});
-
-for (i in sws) {
-    gpio.setup(sws[i].gpio, gpio.DIR_IN, gpio.EDGE_BOTH);
-}
-*/
