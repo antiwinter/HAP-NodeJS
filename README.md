@@ -43,3 +43,12 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
 
+get homehub and install
+```
+sudo apt-get install libavahi-compat-libdnssd-dev pigpio
+git clone https://github.com/antiwinter/homehub
+cd homehub
+npm install
+```
+
+
