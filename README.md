@@ -34,6 +34,10 @@ cat >> /etc/samba/smb.conf
    browseable = yes
    writable = yes
 ^Z
+
+# enable 'wins support' in this file too
+
+sudo smbpasswd -a pi
 sudo /etc/init.d/smbd restart
 ```
 
