@@ -87,7 +87,7 @@ switches.forEach(function (sw) {
             sw.setPower(level);
         });
     });
-}
+});
 
 /*
 
