@@ -6,12 +6,12 @@ var cmdIssuer = function () {
     if (cmdList.length) {
         port.write(cmdList.pop());
     }
-    setTimeout(cmdIssuer, 200);
+    setTimeout(cmdIssuer, 50);
 }
 
-var port = new SerialPort('/dev/pts/5',
+var port = new SerialPort('/dev/ttyUSB0',
     {
-        baudRate: 9600,
+        baudRate: 4800,
         parser: SerialPort.parsers.raw
     },
     function (error) {
@@ -19,7 +19,7 @@ var port = new SerialPort('/dev/pts/5',
     });
 
 port.on('data', function (data) {
-    console.log('serial reply:', data)
+    //    console.log('serial reply:', data)
 });
 
 
@@ -34,13 +34,19 @@ var Switch = function (gpio, relay_id, name) {
     this.setPower = function (en) {
         if (this.status == en) return;
 
-        var cmd = [0x55, 1, en ? 0x12 : 0x11, 0, 0, 0, this.relay_id], sum = 0;
-        for (i in cmd) { sum += cmd[i] };
-        cmd.push(sum);
-        cmdList.push(cmd);
+        this.relay_id.forEach(function (r) {
+            var cmd = [0x55, 3, en ? 0x12 : 0x11, 0, 0, 0, r],
+                sum = 0; cmd.forEach(function (d) {
+                    sum += d;
+//                    console.log("adding", d, "sum", sum);
+                });
+
+            cmd.push(sum);
+            cmdList.push(cmd);
+            console.log("%s %s", en ? "+++" : "---", this.name);
+            console.log(cmd + '\n');
+        });
         this.status = en;
-        console.log("%s %s", en ? "+++" : "---", this.name);
-        console.log(cmd + '\n');
     };
 
     this.getPower = function () { //get power of accessory
@@ -50,17 +56,17 @@ var Switch = function (gpio, relay_id, name) {
 }
 
 var switches = exports.switches = [
-    new Switch(17, 1, "Cinema Wall Light"),  // pin 11
-    new Switch(27, 2, "Cinema Ceiling Light"),  // pin 13
-    new Switch(22, 3, "Living room Light"), // pin 15
-    new Switch(10, 4, "Living room Strip Light"), // pin 19
-    new Switch(9, 5, "Hallway Light"), // pin 21
-    new Switch(11, 6, "Terrace Light"), // pin 23
-    new Switch(7, 7, "Dining Room Light"),  // pin 26
-    new Switch(5, 8, "Dining Room Light Strip"),  // 29
-    new Switch(6, 9, "Small Bedroom Light"),  // pin 31
-    new Switch(13, 10, "Bedroom Light"),  // pin 33
-    new Switch(19, 11, "Bedroom Light Strip")  // pin 35
+    new Switch(17, 5, "Cinema Wall Light"),  // pin 11
+    new Switch(27, 3, "Cinema Ceiling Light"),  // pin 13
+    new Switch(22, 1, "Living room Light"), // pin 15
+    new Switch(10, 10, "Living room Strip Light"), // pin 19
+    new Switch(9, [8, 11], "Hallway Light"), // pin 21
+    new Switch(11, 13, "Terrace Light"), // pin 23
+    new Switch(7, 2, "Dining Room Light"),  // pin 26
+    new Switch(5, 9, "Dining Room Light Strip"),  // 29
+    new Switch(6, 7, "Small Bedroom Light"),  // pin 31
+    new Switch(13, 14, "Bedroom Light"),  // pin 33
+    new Switch(19, [6, 15], "Bedroom Light Strip")  // pin 35
 ];
 
 // prepare the buttons
@@ -84,7 +90,12 @@ switches.forEach(function (sw) {
 
     sw.gpio.forEach(function (gpio) {
         gpio.on('interrupt', function (level) {
-            sw.setPower(level);
+            //            sw.setPower(level);
+            if (this.timeout) clearTimeout(this.timeout);
+            this.timeout = setTimeout(function () {
+                console.log("GPIO", gpio.gpio, level);
+                this.timeout = 0;
+            }, 50);
         });
     });
 });
