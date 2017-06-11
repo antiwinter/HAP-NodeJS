@@ -52,6 +52,6 @@ for (i in sws) {
 bridge.publish({
     username: "CC:22:3D:E3:CE:F6",
     port: 51826,
-    pincode: "031-45-154",
+    pincode: "079-34-343",
     category: Accessory.Categories.BRIDGE
 });
