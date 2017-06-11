@@ -55,4 +55,12 @@ cd homehub
 npm install
 ```
 
+make homehub a service
+```
+npm install pm2 -g
+su root
+pm2 start /home/pi/homehub/start.js
+pm2 startup
+```
+
 
