@@ -13,10 +13,12 @@
     "ed25519": "^0.0.4",
     "fast-srp-hap": "^1.0.1",
     "ip": "^1.1.3",
+    "md5": "^2.2.1",
     "mdns": "^2.3.3",
     "node-persist": "^0.0.11",
     "pigpio": "^0.5.1",
-    "serialport": "^4.0.7"
+    "serialport": "^4.0.7",
+    "websocket": "^1.0.26"
   },
   "devDependencies": {
     "simple-plist": "0.0.4"
