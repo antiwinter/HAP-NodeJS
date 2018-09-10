@@ -1,5 +1,5 @@
 const hap = require('./hap')
-const vtl = require('./voice-tunnel-client')
+const cht = require('./cht')
 const sws = require('./switch').switches
 
 // Home kit in LAN
@@ -13,15 +13,13 @@ hap.createBridge(
   sws
 )
 
-// get options
-
-const opt = require('minimist')(process.argv.slice(2))
-
-// Voice tunnel, support AliGenie & Google home
-vtl.connect(
-  opt.server,
-  opt.port,
-  err => {
-    vtl.createGroup('light', sws)
-  }
+// cloud-home tunnel, support AliGenie & Google home
+cht.createGroup(
+  {
+    type: 'light',
+    id: 'fiwof80230lslE',
+    port: 51827,
+    remoteURI: 'https://cloud-home.azurewebsites.net/api/devgrp'
+  },
+  sws
 )

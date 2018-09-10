@@ -1,32 +1,33 @@
-// prepare serial port
-var SerialPort = require('serialport')
-
-function isEmu() {
-  return !(process.arch === 'arm' || process.arch === 'arm64')
-}
+const isEmu = !(process.arch === 'arm' || process.arch === 'arm64')
 
 var cmdList = []
-var cmdIssuer = function() {
-  if (cmdList.length) {
-    if (!isEmu()) port.write(cmdList.pop())
+
+if (!isEmu) {
+  // prepare serial port
+  var SerialPort = require('serialport')
+
+  var cmdIssuer = function() {
+    if (cmdList.length) {
+      port.write(cmdList.pop())
+    }
+    setTimeout(cmdIssuer, 50)
   }
-  setTimeout(cmdIssuer, 50)
+
+  var port = new SerialPort(
+    '/dev/ttyUSB0',
+    {
+      baudRate: 4800,
+      parser: SerialPort.parsers.raw
+    },
+    function(error) {
+      cmdIssuer()
+    }
+  )
+
+  port.on('data', function(data) {
+    //    console.log('serial reply:', data)
+  })
 }
-
-var port = new SerialPort(
-  '/dev/ttyUSB0',
-  {
-    baudRate: 4800,
-    parser: SerialPort.parsers.raw
-  },
-  function(error) {
-    cmdIssuer()
-  }
-)
-
-port.on('data', function(data) {
-  //    console.log('serial reply:', data)
-})
 
 var Switch = function(gpio, relay_id, name) {
   this.name = name
@@ -74,7 +75,7 @@ var switches = (exports.switches = [
 
 // prepare the buttons
 var Gpio
-if (!isEmu()) {
+if (!isEmu) {
   Gpio = require('pigpio').Gpio
 } else {
   console.log('using emulated gpio on', process.arch)
