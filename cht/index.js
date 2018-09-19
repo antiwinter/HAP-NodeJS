@@ -33,7 +33,9 @@ module.exports = {
 
       ssh.on('close', data => {
         log('ssh exit, reconnecting...')
-        remap()
+        setTimeout(() => {
+          remap()
+        }, 5000)
       })
 
       // update tunnel information
