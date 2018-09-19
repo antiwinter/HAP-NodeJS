@@ -37,20 +37,20 @@ module.exports = {
           remap()
         }, 5000)
       })
-
-      // update tunnel information
-      ax.post(opt.remoteURI, {
-        id: opt.id,
-        uri: `http://${opt.id}.serveo.net/option`
-      })
-        .then(res => {
-          m.log('register devicegroup: %j', res.data)
-        })
-        .catch(err => {
-          m.log('register devicegroup failed')
-        })
     }
     remap()
+
+    // update tunnel information
+    ax.post(opt.remoteURI, {
+      id: opt.id,
+      uri: `http://${opt.id}.serveo.net/option`
+    })
+      .then(res => {
+        m.log('register devicegroup: %j', res.data)
+      })
+      .catch(err => {
+        m.log('register devicegroup failed')
+      })
 
     app = express()
     app.use(bodyParser.urlencoded({ extended: false }))
